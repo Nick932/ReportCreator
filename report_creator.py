@@ -330,11 +330,13 @@ folder?\nInput "y" or "Y" to create report files into existing folder, or input 
         directory = folder+os.sep
         #os.chdir(directory)
         oldname = filename
+        print(directory+oldname)
         
         if filename_tail:
-            new_name = str(filename)+str(filename_tail)
+            new_name = str(oldname)+str(filename_tail)
             try:
-                os.rename(directory+oldname, new_name)
+                os.rename(directory+oldname, directory+new_name)
+                print('WE GOTTA ', directory+new_name)
             except PermissionError:
                 print('You have no permissions to create folder in this directory:\n', directory)
                 return False
@@ -342,11 +344,13 @@ folder?\nInput "y" or "Y" to create report files into existing folder, or input 
                 print('Unhandled exception while trying to rename existing file:', sys.exc_info()[:2])
                 return False
             else:
-                with open(directory+filename, 'w') as file:
+                print('HERE WE ARE', directory+oldname)
+                with open(directory+oldname, 'w') as file:
                     file.write(text)
                 return True
         else:
-            with open(directory+filename, 'w') as file:
+            print('HERE WE ARE AGAAAAAAAAAIN', directory+oldname)
+            with open(directory+oldname, 'w') as file:
                 file.write(text)
             return True
         
@@ -365,22 +369,14 @@ folder?\nInput "y" or "Y" to create report files into existing folder, or input 
         self._check_result_or_repeat(folder_created, self.create_report_from_json, foldername)        
         
         for user in self.json_users:
-            
             tasks_of_user, self.json_tasks = self._filter_tasks_of_user(user,  self.json_tasks)
             report = self.report_text_creator(user, tasks_of_user)
-            
-            
             filename = self._check_name_or_give_id(user, 'username', 'user')
-
-                
-            
-                
             filename_tail = None
             directory = os.getcwd()+os.sep+foldername
+            
             if self._check_file_exists(foldername, filename):
-                
-                directory = os.getcwd()+os.sep+foldername+os.sep
-                edit_time = os.path.getmtime(directory+filename)
+                edit_time = os.path.getmtime(directory+os.sep+filename)
                 rawdatetime = datetime.datetime.strptime(time.ctime(edit_time), "%a %b %d %H:%M:%S %Y")
                 date_n_time = str(rawdatetime).split(' ')
                 filename_tail = '_'+date_n_time[0]+'T'+date_n_time[1][:-3]
