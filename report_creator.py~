@@ -281,7 +281,7 @@ folder?\nInput "y" or "Y" to create report files into existing folder, or input 
             If not, returns None.
             '''
             if str(string) == str(default_string):
-                result = str(string)+'Empty list.' 
+                result = str(string)+'Список пуст.' 
                 return result
             return None
             
