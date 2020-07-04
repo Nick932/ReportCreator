@@ -1,5 +1,5 @@
 # Report creator
-Script for extracting data form JSON API endpoints:
+Script for extracting data from two JSON API endpoints:
 first one includes all users, and second one includes tasks of them.
 After data extraction, creates report files in the necessary directory.
 
