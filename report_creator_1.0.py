@@ -1,12 +1,26 @@
+''' Module defines necessary classes for reporting.
+
+Solving next task:
+
+Creates reports' files in the current directory.
+Each report file must be named by user's username and contains information
+about user and his done/undone tasts, extracted from 2 API endpoints 
+(first one gives JSON data for users, second one gives JSON data for all tasks.
+Tasks don't sorted but must be, using 'userId' of task which value matches 
+with 'id' value of some user from first endpoint).
+
+'''
+
 import requests
 import os, sys
 import datetime, time
 
 
 class Report_files:
-    '''
-    Conducts all work on creating report files. Uses '.create()' method
-    to start.
+    '''Conducts all work on creating report files. 
+    
+    Public methods defined here:
+    create() (starts the whole process).
     
     Takes 3 arguments:
     - user_and_tasks_pairs (in list format) - list of tuples, where
@@ -27,8 +41,7 @@ class Report_files:
 
 
     def _file_already_exists(self, filename : str):
-        '''
-        Checks if file with 'filename' already exists
+        '''Checks if file with 'filename' already exists
         in the 'self.foldername' of current working directory.
         
         Takes 1 argument:
@@ -43,8 +56,7 @@ class Report_files:
 
     
     def _get_file_edited_datetime(self, name_of_file : str):
-        '''
-        Checks date and time of file editing.
+        '''Checks date and time of file editing.
         
         Takes 1 argument:
         - name_of_file (in str format) - name of the file (including type)
@@ -65,9 +77,8 @@ class Report_files:
     
     
     def _rename_old_file(self, filename : str, filetype : str):
-        '''
-        Tries to rename exiting file using date and time returned by
-        self._get_file_edited_datetime() method.
+        ''' Tries to rename exiting file using date and time returned by self._get_file_edited_datetime() method.
+        
         New name will be like: "<exiting_name>_2020-09-23T15:25.<type_of_file>.
         
         Takes 2 arguments:
@@ -93,8 +104,7 @@ class Report_files:
 
 
     def _sort_tasks_by_status(self, tasks_dicts : list):
-        '''
-        Sorts tasks by status.
+        '''Sorts tasks by status.
         
         Takes 1 argument:
         - tasks_dicts (in list format) - list of tasks' dicts with their
@@ -119,9 +129,9 @@ class Report_files:
     
     
     def _create_tasks_text(self, tasks_dicts : list,  first_string : str, key_with_text):
-        '''
-        Extracts values from each dict(from it's key named 'key_with_text) 
-        located in 'tasks_dicts'. Creates text from connected values: 
+        '''Extracts values from each dict(from it's key named 'key_with_text) located in 'tasks_dicts'. 
+        
+        Creates text from connected values: 
         each value ends with '\n'; if value's length >50, truncates it
         to 50 symbols and add '...' in the end (before '\n'). Adds 
         at the beginning of text first string with value 'first_string'.
@@ -170,8 +180,7 @@ class Report_files:
         
 
     def _create_report_text(self, user_info : dict, tasks_dicts : list ):
-        '''
-        Creates an entire report's text.
+        '''Creates an entire report's text.
         
         Takes 2 arguments:
         - user_info (in dict format) - dict of user's data.
@@ -218,6 +227,7 @@ class Report_files:
         
 
     def _create_report_file (self, filename : str, report_text : str):
+        '''Creates report file with necessary report's text.'''
         
         with open(self.foldername+os.sep+filename, 'w') as file:
             file.write(report_text)
@@ -225,8 +235,7 @@ class Report_files:
 
 
     def create(self):
-        '''
-        Method which initialize all files creation process.
+        '''Method which initialize all files creation process.
         
         Delegates next tasks to internal methods of class:
         1. Creates text for the report file.
@@ -235,6 +244,7 @@ class Report_files:
         
         Uses class'es attribute 'list_of_user_and_tasks_pairs'.
         '''
+        
         for user_and_tasks in self.list_of_user_and_tasks_pairs:
             
             user, tasks = user_and_tasks[0],  user_and_tasks[1]
@@ -250,9 +260,9 @@ class Report_files:
 
 
 class Folder:
-    '''
-    Preparing folder for taks' files.
-    Creates folder if it doesn't exists.
+    '''Preparing folder for taks' files. Creates folder if it doesn't exists.
+    Open methods defied here:
+    prepare() - to start whole process.
     
     Takes 1 argument:
     - foldername (in str format) - name of necessary folder for
@@ -268,9 +278,7 @@ class Folder:
             
     
     def _folder_already_exists(self, foldername : str, current_directory : str):
-        '''
-        Checks if folder with such name already exists in the
-        directory with executed file.
+        '''Checks if folder with such name already exists in the directory with executed file.
         
         Takes 2 arguments:
         - foldername (in str format) - name of necessary folder for
@@ -290,8 +298,7 @@ class Folder:
             
             
     def _create_folder(self, foldername : str,  current_directory : str):
-        '''
-        Creates a folder in the given directory.
+        '''Creates a folder in the given directory.
         
         Takes 2 arguments:
         - foldername (in str format) - name of necessary folder;
@@ -311,13 +318,14 @@ class Folder:
     
     
     def prepare(self):
-        '''
-        Checks if the folder already exists. If not, creates it.
+        '''Checks if the folder already exists. If not, creates it.
+        
         Delegates both of these processes to internal methods.
         
         Defines current working directory for passing it to
         these internal methods like argument.
         '''
+        
         cwd = os.getcwd()
         if not self._folder_already_exists(self.foldername,  cwd):
             self._create_folder(self.foldername,  cwd)
@@ -326,9 +334,10 @@ class Folder:
 
 
 class JSON_reporting:
+    '''Implements a decomposition pattern for reporting.
     
-    '''
-    Implements a decomposition pattern.
+    Public methods defined here:
+    prepare() (starts the whole process).
     
     Takes 4 arguments:
     - users_source (in str format) - expected URI for JSON-response;
@@ -359,15 +368,14 @@ class JSON_reporting:
         
         
     def _extract_data(self, JSON_source: str):
+        '''Extracting data from JSON source. Checks connection errors.
         
-        '''
         Takes 1 argument:
         - JSON_source (in str format) - expected URI for JSON data.
         
-        Extracting data from JSON source. Checks connection errors.
-        
         Returns JSON data (expected list of dicts).
         '''
+        
         JSON_adress = JSON_source
         
         try:
@@ -381,18 +389,18 @@ class JSON_reporting:
 
 
     def _group_up_user_tasks(self, users : list, tasks : list):
-        ''' 
+        '''Group up tasks for each user.
+        
         Takes 2 arguments:
         users (in list format) - expected list of users' data dicts.
         tasks (in list format) - expected list of tasks' data dicts.
-        
-        Group up tasks for each user.
         
         Returns list of tuples, where:
         first element of tuple is dict of user's data,
         secont element of tuple is list of dicts 
         of user's tasks data or None.
         '''
+        
         list_of_users = users
         list_of_tasks = tasks
         
@@ -414,15 +422,13 @@ class JSON_reporting:
 
 
     def prepare(self):
-        
-        '''
-        Delegates next tasks to self methods:
+        '''Delegates next tasks to self methods:
         - Extracts data of users and tasks from JSON sources;
         - Group up tasks for each user;
         
         Delegates next tasks to other classes:
-        - Preparing folder for tasks' files;
-        - Creating report files;
+        - Preparing folder for tasks' files (using 'Folder()' class);
+        - Creating report files (using 'Report_files()' class);
         '''
         
         tasks_list = self._extract_data(self.tasks_source)
