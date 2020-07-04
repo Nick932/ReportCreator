@@ -3,6 +3,9 @@ Script for extracting data from two JSON API endpoints:
 first one includes all users, and second one includes tasks of them.
 After data extraction, creates report files in the necessary directory.
 
+'report_creator.py' is the first brute solving version.
+'report_creator_1.0.py' is the second one total refactored version.
+
 # Requirements
 - Python 3.5.2+
 - requests library (2.23.0)
