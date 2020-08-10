@@ -7,7 +7,7 @@ After data extraction, creates report files in the necessary directory.
 - Python 3.5.2+
 - requests library (2.23.0)
 - Linux OS (was tested on Ubuntu 16.04)
-(See requirements.txt for more detail)
+- See requirements.txt for more detail
 
 # To contribute
 There are no something special to join the project.
